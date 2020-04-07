@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Button } from 'react-bootstrap';
-import '/app/node_modules/bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
 
 import {
   BrowserRouter as Router,
@@ -24,7 +24,7 @@ export default function App() {
 	    </Link>
           </li>
           <li>
-	    <Link to ="/about">
+	    <Link to="/about">
 		<Button renderas="button">
 			<span>About</span>
 		</Button>
@@ -37,6 +37,13 @@ export default function App() {
 		</Button>
 	    </Link>
           </li>
+	  <li>
+	    <Link to="/test">
+		<Button renderas="button">
+			<span>Test</span>
+		</Button>
+	    </Link>
+	  </li>
         </ul>
 
         <hr />
@@ -51,14 +58,14 @@ export default function App() {
           <Route path="/dashboard">
             <Dashboard />
           </Route>
+	  <Route path="/test">
+	    <Test />
+	  </Route>
         </Switch>
       </div>
     </Router>
   );
 }
-
-// You can think of these components as "pages"
-// in your app.
 
 function Home() {
   return (
@@ -76,7 +83,7 @@ function Home() {
 
 function About() {
   return (
-    <div>
+   <div>
       <h2>About</h2>
     </div>
   );
@@ -90,23 +97,30 @@ function Dashboard() {
   );
 }
 
-/*
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get yo little self started, edit <code>src/App.js</code> and save to reload.
-        </p>
-	<Button variant="primary" size="lg">Test GETTER</Button>
-      </div>
-    );
-  }
-}
+class Test extends Component {
 
-export default App;
-*/
+    constructor(props) {
+        super(props);
+        this.state = { retrieved: [] };
+    }
+
+    componentDidMount() {
+        axios.get(process.env.REACT_APP_API_URL)
+            .then(res => {
+                console.log(res.data);
+                this.setState({ retrieved: res.data });
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    }
+
+    render() {
+        return (
+            <div className="wrapper-example">
+                <p>We got:</p>
+                <p>{this.state.retrieved}</p>
+            </div>
+        )
+    }
+}
